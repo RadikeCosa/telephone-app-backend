@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
+const morgan = require("morgan");
+const cors = require("cors");
 
+app.use(cors());
 let persons = [
   {
     id: 1,
@@ -25,6 +28,13 @@ let persons = [
 ];
 
 app.use(express.json());
+morgan.token("data", (request) => {
+  return request.method === "POST" ? JSON.stringify(request.body) : " ";
+});
+
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :data")
+);
 
 app.get("/", (request, response) => {
   response.send("<h1>Contactos</h1>");
